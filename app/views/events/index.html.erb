@@ -1,10 +1,9 @@
 <h1>イベント一覧</h1>
 <%= link_to "企画する", new_event_path, class:"post" %>
 
-
-
 <div class="contents">
   <% @events.each do |event| %>
+  <% @userevents.each do |userevent| %>
     <div class="content_event">
 
     <table class="event-table">
@@ -15,7 +14,11 @@
         </tr>
         <tr>
           <th class="detail-item">イベント名</th>
-          <td class="detail-value"><%= event.name%></td>
+          <td class="detail-value"><%= event.name%>
+            <% unless userevent.user.id == current_user.id %>
+              <%= button_to "参加", root_path, method: :get %>
+            <% end %>
+          </td>
         </tr>
         <tr>
           <th class="detail-item">場所</th>
@@ -34,46 +37,16 @@
           <td class="detail-value"><%= event.description %></td>
         </tr>
 
-        <% @userevents.each do |userevent| %>
         <% if userevent.event_id == event.id %>
         <tr>
           <th class="detail-item">開催者</th>
           <td class="detail-value"><%= userevent.user.nickname %></td>
         </tr>
-            
-          <% end %>
+        <% end %>
 
-      <p><%= event.name %></p>
+        <%= link_to 'タスク作成', new_event_task_path(event) %>
 
-        <span class="event_location">
-          <%= event.id %>
-        </span>
-
-
-        <span class="event_location">
-          <%= event.location %>
-        </span>
-        <span class="event_genre">
-          <%= event.genre_id %>
-        </span>
-        <span class="event_date">
-          <%= event.date %>
-        </span>
-        <span class="event_description">
-          <%= event.description %>
-        </span>
-
-        <%= link_to 'タスク作成', new_event_task_path(event) %> <%= link_to 'チャットルームへ', rooms_path(event) %>
-
-
-
-          <% @userevents.each do |userevent| %>
-             <% if userevent.event_id == event.id %>
-               <%= userevent.user.nickname %>
-
-             <% end %>
-
-          <% end %>
+        <%= link_to 'チャットルームへ', rooms_path(event) %>
 
       </tbody>
     </table>
@@ -87,13 +60,10 @@
           <% if event.tasks.length > 0 %>
             <%= link_to 'タスク一覧', event_tasks_path(event) %>
           <% end %>
-
         <% end %>
       <% end %>
     <% end %>
-
     </div>
   <% end %>
 </div>
-
-
+<% end %>
